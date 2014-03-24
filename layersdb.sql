@@ -446,3 +446,69 @@ CREATE OR REPLACE VIEW distributions AS
 
 ALTER TABLE distributions OWNER TO postgres;
 
+
+CREATE OR REPLACE FUNCTION updatefieldsnames()
+  RETURNS trigger AS
+$BODY$
+    BEGIN
+	UPDATE fields
+	SET name = NEW.displayname
+	WHERE spid = '' || NEW.id
+		AND fields.name <> NEW.displayname;
+	RETURN NULL;
+    END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION updatefieldsnames()
+  OWNER TO postgres;
+
+CREATE TRIGGER trig_layers_displayname_update
+  AFTER UPDATE
+  ON layers
+  FOR EACH ROW
+  EXECUTE PROCEDURE updatefieldsnames();
+  
+  
+  
+CREATE TABLE points_of_interest
+(
+  id serial NOT NULL,
+  object_id character varying(256),
+  name character varying NOT NULL,
+  type character varying NOT NULL,
+  latitude double precision NOT NULL,
+  longitude double precision NOT NULL,
+  bearing double precision,
+  user_id character varying,
+  description character varying,
+  focal_length_millimetres double precision,
+  the_geom geometry,
+  CONSTRAINT pk_points_of_interest PRIMARY KEY (id),
+  CONSTRAINT fk_points_of_interest_object_pid FOREIGN KEY (object_id)
+      REFERENCES objects (pid) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE points_of_interest
+  OWNER TO postgres;
+
+
+CREATE TABLE uploaded_objects_metadata
+(
+  pid character varying(256) NOT NULL,
+  user_id text,
+  time_last_updated timestamp with time zone,
+  id serial NOT NULL,
+  CONSTRAINT pk_uploaded_objects_metadata PRIMARY KEY (id),
+  CONSTRAINT fk_uploaded_objects_metadata FOREIGN KEY (pid)
+      REFERENCES objects (pid) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE uploaded_objects_metadata
+  OWNER TO postgres;
