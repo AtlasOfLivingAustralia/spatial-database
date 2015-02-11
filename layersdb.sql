@@ -819,7 +819,7 @@ UPDATE objects SET name_id=obj_names.id FROM obj_names WHERE
 lower(objects.name)=obj_names.name AND objects.namesearch=TRUE;  
 SELECT count(*) FROM obj_names;'
 
-LANGUAGE sql VOLATILE
+LANGUAGE sql VOLATILE;
 
 INSERT INTO fields (name, id, type, "desc", enabled, spid, indb, defaultlayer, namesearch, "intersect", layerbranch, analysis, addtomap) VALUES ('User Uploaded Objects', 'cl1083', 'e', '', true, '1083', false, false, false, false, false, false, false);
 
