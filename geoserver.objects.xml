@@ -31,7 +31,7 @@
         <entry key="JDBC_VIRTUAL_TABLE">
             <virtualTable>
                 <name>ObjectsLimited</name>
-                <sql>Select * from objects where pid = &apos;%s%&apos;</sql>
+                <sql>Select * from objects where pid in (select unnest(string_to_array(&apos;%s%&apos;,&apos;~&apos;)))</sql>
                 <keyColumn>id</keyColumn>
                 <geometry>
                     <name>the_geom</name>
@@ -41,7 +41,7 @@
                 <parameter>
                     <name>s</name>
                     <defaultValue>1</defaultValue>
-                    <regexpValidator>^[\w\d]+$</regexpValidator>
+                    <regexpValidator>^[\w\d~]+$</regexpValidator>
                 </parameter>
             </virtualTable>
         </entry>
