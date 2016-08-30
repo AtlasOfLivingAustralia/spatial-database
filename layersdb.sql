@@ -266,7 +266,7 @@ CREATE TABLE fields (
     sdesc character varying(256),
     indb boolean DEFAULT false,
     enabled boolean DEFAULT false,
-    last_update timestamp without time zone,
+    last_update timestamp without time zone DEFAULT now(),
     namesearch boolean DEFAULT false,
     defaultlayer boolean,
     "intersect" boolean DEFAULT false,
@@ -350,7 +350,8 @@ CREATE TABLE layers (
     path_250m character varying(256),
     pid character varying,
     keywords character varying,
-    domain character varying(100)
+    domain character varying(100),
+    dt_added timestamp without time zone DEFAULT now()
 );
 
 
@@ -439,7 +440,9 @@ CREATE TABLE tabulation (
     the_geom geometry,
     area double precision,
     occurrences integer DEFAULT 0,
-    species integer DEFAULT 0
+    species integer DEFAULT 0,
+    speciest1 integer DEFAULT 0,
+    speciest2 integer DEFAULT 0
 );
 
 
